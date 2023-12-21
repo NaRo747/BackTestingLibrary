@@ -90,37 +90,67 @@ std::map<std::string, std::vector<float>>::iterator CsvIterator::GetLast()
     return this->price_data.end();
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetOpen(std::string start_date, std::string end_date)
+std::unique_ptr<std::vector<float>> CsvIterator::GetOpenValue(std::string start_date, std::string end_date)
+{
+    return this->GetPriceDataValue(start_date, end_date, 0);
+}
+
+std::unique_ptr<std::vector<float>> CsvIterator::GetHighValue(std::string start_date, std::string end_date)
+{
+    return this->GetPriceDataValue(start_date, end_date, 1);
+}
+
+std::unique_ptr<std::vector<float>> CsvIterator::GetLowValue(std::string start_date, std::string end_date)
+{
+    return this->GetPriceDataValue(start_date, end_date, 2);
+}
+
+std::unique_ptr<std::vector<float>> CsvIterator::GetCloseValue(std::string start_date, std::string end_date)
+{
+    return this->GetPriceDataValue(start_date, end_date, 3);
+}
+
+std::unique_ptr<std::vector<float>> CsvIterator::GetAdjustCloseValue(std::string start_date, std::string end_date)
+{
+    return this->GetPriceDataValue(start_date, end_date, 4);
+}
+
+std::unique_ptr<std::vector<float>> CsvIterator::GetVolumeValue(std::string start_date, std::string end_date)
+{
+    return this->GetPriceDataValue(start_date, end_date, 5);
+}
+
+std::unique_ptr<std::map<std::string, float>> CsvIterator::GetOpen(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 0);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetHigh(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, float>> CsvIterator::GetHigh(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 1);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetLow(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, float>> CsvIterator::GetLow(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 2);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetClose(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, float>> CsvIterator::GetClose(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 3);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetAdjustClose(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, float>> CsvIterator::GetAdjustClose(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 4);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetVolume(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, float>> CsvIterator::GetVolume(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 5);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetPriceData(std::string start_date, std::string end_date, int position)
+std::unique_ptr<std::vector<float>> CsvIterator::GetPriceDataValue(std::string start_date, std::string end_date, int position)
 {
     auto start_itr = this->price_data.find(start_date);
     auto end_itr = this->price_data.find(end_date);
@@ -143,6 +173,42 @@ std::unique_ptr<std::vector<float>> CsvIterator::GetPriceData(std::string start_
     {
         for (; start_itr->first <= end_itr->first; start_itr++)
             sliced_price_data->push_back(start_itr->second[position]);
+    }
+    else
+    {
+        std::cerr << "end_date: " << end_date << " is before the start_date: " << start_date << std::endl;
+        return nullptr;
+    }
+
+
+    return sliced_price_data;
+}
+
+std::unique_ptr<std::map<std::string, float>> CsvIterator::GetPriceData(std::string start_date, std::string end_date, int position)
+{
+    auto start_itr = this->price_data.find(start_date);
+    auto end_itr = this->price_data.find(end_date);
+    std::unique_ptr<std::map<std::string, float>> sliced_price_data = std::make_unique<std::map<std::string, float>>();
+
+    // Validate dates.
+    if (start_itr == this->price_data.end())
+    {
+        std::cerr << start_date << " is an invalid date" << std::endl;
+        return nullptr;
+    }
+
+    if (end_itr == this->price_data.end())
+    {
+        std::cerr << end_date << " is an invalid date" << std::endl;
+        return nullptr;
+    }
+
+    if (start_itr->first < end_itr->first)
+    {
+        for (; start_itr->first <= end_itr->first; start_itr++)
+        {
+            sliced_price_data->insert({start_itr->first, start_itr->second[position]});
+        }
     }
     else
     {

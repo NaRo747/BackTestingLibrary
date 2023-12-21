@@ -15,12 +15,19 @@ public:
 	std::vector<float> previous();
 	std::map<std::string, std::vector<float>>::iterator GetFirst();
 	std::map<std::string, std::vector<float>>::iterator GetLast();
-	std::unique_ptr<std::vector<float>> GetOpen(std::string start_date, std::string end_date);
-	std::unique_ptr<std::vector<float>> GetHigh(std::string start_date, std::string end_date);
-	std::unique_ptr<std::vector<float>> GetLow(std::string start_date, std::string end_date);
-	std::unique_ptr<std::vector<float>> GetClose(std::string start_date, std::string end_date);
-	std::unique_ptr<std::vector<float>> GetAdjustClose(std::string start_date, std::string end_date);
-	std::unique_ptr<std::vector<float>> GetVolume(std::string start_date, std::string end_date);
+	std::unique_ptr<std::vector<float>> GetOpenValue(std::string start_date, std::string end_date);
+	std::unique_ptr<std::vector<float>> GetHighValue(std::string start_date, std::string end_date);
+	std::unique_ptr<std::vector<float>> GetLowValue(std::string start_date, std::string end_date);
+	std::unique_ptr<std::vector<float>> GetCloseValue(std::string start_date, std::string end_date);
+	std::unique_ptr<std::vector<float>> GetAdjustCloseValue(std::string start_date, std::string end_date);
+	std::unique_ptr<std::vector<float>> GetVolumeValue(std::string start_date, std::string end_date);
+
+	std::unique_ptr<std::map<std::string, float>>GetOpen(std::string start_date, std::string end_date);
+	std::unique_ptr<std::map<std::string, float>>GetHigh(std::string start_date, std::string end_date);
+	std::unique_ptr<std::map<std::string, float>>GetLow(std::string start_date, std::string end_date);
+	std::unique_ptr<std::map<std::string, float>>GetClose(std::string start_date, std::string end_date);
+	std::unique_ptr<std::map<std::string, float>>GetAdjustClose(std::string start_date, std::string end_date);
+	std::unique_ptr<std::map<std::string, float>>GetVolume(std::string start_date, std::string end_date);
 
 private:
 	std::string ticker;
@@ -30,7 +37,8 @@ private:
 	*/ 
 	std::map<std::string, std::vector<float>> price_data;
 	std::map<std::string, std::vector<float>>::iterator data_itr;
-	std::unique_ptr<std::vector<float>> GetPriceData(std::string start_date, std::string end_date, int position);
+	std::unique_ptr<std::vector<float>> GetPriceDataValue(std::string start_date, std::string end_date, int position);
+	std::unique_ptr<std::map<std::string, float>>GetPriceData(std::string start_date, std::string end_date, int position);
 
 
 };
