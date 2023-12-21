@@ -130,11 +130,15 @@
     <None Include="..\..\..\..\Downloads\YU.L.csv" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BackTestSimulation.cpp" />
     <ClCompile Include="CsvIterator.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MovingAverage.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BackTestSimulation.h" />
     <ClInclude Include="CsvIterator.h" />
+    <ClInclude Include="MovingAverage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
