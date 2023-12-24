@@ -205,10 +205,13 @@ std::unique_ptr<std::map<std::string, float>> CsvIterator::GetPriceData(std::str
 
     if (start_itr->first < end_itr->first)
     {
-        for (; start_itr->first <= end_itr->first; start_itr++)
+        for (; start_itr->first < end_itr->first; start_itr++)
         {
             sliced_price_data->insert({start_itr->first, start_itr->second[position]});
         }
+
+        // Include final element. This is necessary in the event that end_itr is the final element in the map.
+        sliced_price_data->insert({ start_itr->first, start_itr->second[position] });
     }
     else
     {
