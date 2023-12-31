@@ -14,22 +14,22 @@ class MovingAverage
 {
 public:
 	MovingAverage() = default;
-	MovingAverage(int window_size, std::map<std::string, float>* price_data);
+	MovingAverage(int window_size, std::map<std::string, double>* price_data);
 	~MovingAverage() = default;
 	void UpdateWindowSize(int window_size);
-	void AddData(std::map<std::string, float> price_data);
-	std::map<std::string, float> GetMovingAverage();
-	float GetGradient();
+	void AddData(std::map<std::string, double> price_data);
+	std::map<std::string, double> GetMovingAverage();
+	double GetGradient();
 	int GetWindowSize();
 	CrossReturn HasCrossed(MovingAverage &sma, std::string date);
 	std::map<std::string, CrossReturn> ListCrosses(std::string start_date, std::string end_date);
 private:
-	std::map<std::string, float>* price_data;
-	std::map<std::string, float> moving_average;
-	float gradient;
+	std::map<std::string, double>* price_data;
+	std::map<std::string, double> moving_average;
+	double gradient;
 	int window_size;
 	void CalculateMovingAverage();
-	float CalculateGradient();
-	CrossReturn CrossGradient(float orig_value1, float orig_value2, float prev_value1, float prev_value2);
+	double CalculateGradient();
+	CrossReturn CrossGradient(double orig_value1, double orig_value2, double prev_value1, double prev_value2);
 };
 

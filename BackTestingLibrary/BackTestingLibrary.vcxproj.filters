@@ -18,6 +18,9 @@
     <None Include="YU.L.csv">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\..\..\..\Downloads\YU.L beg.csv">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,6 +35,9 @@
     <ClCompile Include="BackTestSimulation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RelativeStrengthIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CsvIterator.h">
@@ -41,6 +47,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BackTestSimulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RelativeStrengthIndex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

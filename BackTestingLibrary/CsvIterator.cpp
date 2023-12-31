@@ -8,7 +8,7 @@
 #include <map>
 
 
-CsvIterator::CsvIterator(std::string data_file_path)
+CsvIterator::CsvIterator(std::string data_file_path) : file_path{data_file_path}
 {
     // Open file as a stream.
     std::ifstream data_file(data_file_path, std::ifstream::in);
@@ -44,7 +44,7 @@ CsvIterator::CsvIterator(std::string data_file_path)
         {
             std::istringstream ss(line);
             std::string datapoint{};
-            std::vector<float> price_info{};
+            std::vector<double> price_info{};
             std::string date{};
 
             std::getline(ss, datapoint, ',');
@@ -52,7 +52,7 @@ CsvIterator::CsvIterator(std::string data_file_path)
 
             while (std::getline(ss, datapoint, ','))
             {
-                // Convert datapoint to a float and add to end of vector.
+                // Convert datapoint to a double and add to end of vector.
                 price_info.push_back(stof(datapoint));
             }
 
@@ -62,99 +62,127 @@ CsvIterator::CsvIterator(std::string data_file_path)
         // Initialise the iterator.
         this->data_itr = this->price_data.begin();
 
+        data_file.close();
     }
 }
 
-std::map<std::string, std::vector<float>> CsvIterator::GetPriceVector(std::string date)
+std::map<std::string, std::vector<double>> CsvIterator::GetPriceVector(std::string date)
 {
-    return std::map<std::string, std::vector<float>>();
+    return std::map<std::string, std::vector<double>>();
 }
 
-std::vector<float> CsvIterator::next()
+std::vector<double> CsvIterator::next()
 {
     return (this->data_itr++)->second;
 }
 
-std::vector<float> CsvIterator::previous()
+std::vector<double> CsvIterator::previous()
 {
     return (this->data_itr--)->second;
 }
 
-std::map<std::string, std::vector<float>>::iterator CsvIterator::GetFirst()
+std::map<std::string, std::vector<double>>::iterator CsvIterator::GetFirst()
 {
     return this->price_data.begin();
 }
 
-std::map<std::string, std::vector<float>>::iterator CsvIterator::GetLast()
+std::map<std::string, std::vector<double>>::iterator CsvIterator::GetLast()
 {
     return this->price_data.end();
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetOpenValue(std::string start_date, std::string end_date)
+void CsvIterator::addEntry(std::string date, std::vector<double> price_data)
+{
+    this->price_data.insert({ date, price_data });
+    std::ofstream file(this->file_path, std::ios::app); // Open the file in append mode
+
+    if (file.is_open()) {
+        // Construct a CSV line by joining elements in the data vector with commas
+        std::stringstream csvLine;
+        csvLine << date;
+        for (const auto& field : price_data) {
+            csvLine << "," << field;
+        }
+
+        // Remove the trailing comma and append a newline
+        std::string line = csvLine.str();
+
+        // Write the constructed line to the file
+        file << line;
+
+        // Close the file
+        file.close();
+    }
+    else {
+        std::cerr << "Error: Unable to open file for appending." << std::endl;
+    }
+}
+
+std::unique_ptr<std::vector<double>> CsvIterator::GetOpenValue(std::string start_date, std::string end_date)
 {
     return this->GetPriceDataValue(start_date, end_date, 0);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetHighValue(std::string start_date, std::string end_date)
+std::unique_ptr<std::vector<double>> CsvIterator::GetHighValue(std::string start_date, std::string end_date)
 {
     return this->GetPriceDataValue(start_date, end_date, 1);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetLowValue(std::string start_date, std::string end_date)
+std::unique_ptr<std::vector<double>> CsvIterator::GetLowValue(std::string start_date, std::string end_date)
 {
     return this->GetPriceDataValue(start_date, end_date, 2);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetCloseValue(std::string start_date, std::string end_date)
+std::unique_ptr<std::vector<double>> CsvIterator::GetCloseValue(std::string start_date, std::string end_date)
 {
     return this->GetPriceDataValue(start_date, end_date, 3);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetAdjustCloseValue(std::string start_date, std::string end_date)
+std::unique_ptr<std::vector<double>> CsvIterator::GetAdjustCloseValue(std::string start_date, std::string end_date)
 {
     return this->GetPriceDataValue(start_date, end_date, 4);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetVolumeValue(std::string start_date, std::string end_date)
+std::unique_ptr<std::vector<double>> CsvIterator::GetVolumeValue(std::string start_date, std::string end_date)
 {
     return this->GetPriceDataValue(start_date, end_date, 5);
 }
 
-std::unique_ptr<std::map<std::string, float>> CsvIterator::GetOpen(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, double>> CsvIterator::GetOpen(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 0);
 }
 
-std::unique_ptr<std::map<std::string, float>> CsvIterator::GetHigh(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, double>> CsvIterator::GetHigh(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 1);
 }
 
-std::unique_ptr<std::map<std::string, float>> CsvIterator::GetLow(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, double>> CsvIterator::GetLow(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 2);
 }
 
-std::unique_ptr<std::map<std::string, float>> CsvIterator::GetClose(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, double>> CsvIterator::GetClose(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 3);
 }
 
-std::unique_ptr<std::map<std::string, float>> CsvIterator::GetAdjustClose(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, double>> CsvIterator::GetAdjustClose(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 4);
 }
 
-std::unique_ptr<std::map<std::string, float>> CsvIterator::GetVolume(std::string start_date, std::string end_date)
+std::unique_ptr<std::map<std::string, double>> CsvIterator::GetVolume(std::string start_date, std::string end_date)
 {
     return this->GetPriceData(start_date, end_date, 5);
 }
 
-std::unique_ptr<std::vector<float>> CsvIterator::GetPriceDataValue(std::string start_date, std::string end_date, int position)
+std::unique_ptr<std::vector<double>> CsvIterator::GetPriceDataValue(std::string start_date, std::string end_date, int position)
 {
     auto start_itr = this->price_data.find(start_date);
     auto end_itr = this->price_data.find(end_date);
-    std::unique_ptr<std::vector<float>> sliced_price_data = std::make_unique<std::vector<float>>();
+    std::unique_ptr<std::vector<double>> sliced_price_data = std::make_unique<std::vector<double>>();
 
     // Validate dates.
     if (start_itr == this->price_data.end())
@@ -184,11 +212,11 @@ std::unique_ptr<std::vector<float>> CsvIterator::GetPriceDataValue(std::string s
     return sliced_price_data;
 }
 
-std::unique_ptr<std::map<std::string, float>> CsvIterator::GetPriceData(std::string start_date, std::string end_date, int position)
+std::unique_ptr<std::map<std::string, double>> CsvIterator::GetPriceData(std::string start_date, std::string end_date, int position)
 {
     auto start_itr = this->price_data.find(start_date);
     auto end_itr = this->price_data.find(end_date);
-    std::unique_ptr<std::map<std::string, float>> sliced_price_data = std::make_unique<std::map<std::string, float>>();
+    std::unique_ptr<std::map<std::string, double>> sliced_price_data = std::make_unique<std::map<std::string, double>>();
 
     // Validate dates.
     if (start_itr == this->price_data.end())

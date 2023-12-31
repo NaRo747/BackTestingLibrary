@@ -3,7 +3,7 @@
 #include <deque>
 #include <string>
 
-MovingAverage::MovingAverage(int window_size, std::map<std::string, float> *price_data)
+MovingAverage::MovingAverage(int window_size, std::map<std::string, double> *price_data)
 {
 	this->window_size = window_size;
 	this->price_data = price_data;
@@ -17,18 +17,18 @@ void MovingAverage::UpdateWindowSize(int window_size)
 	this->CalculateMovingAverage();
 }
 
-void MovingAverage::AddData(std::map<std::string, float> price_data)
+void MovingAverage::AddData(std::map<std::string, double> price_data)
 {
 	this->price_data->insert(price_data.begin(), price_data.end());
 	this->CalculateMovingAverage();
 }
 
-std::map<std::string, float> MovingAverage::GetMovingAverage()
+std::map<std::string, double> MovingAverage::GetMovingAverage()
 {
 	return this->moving_average;
 }
 
-float MovingAverage::GetGradient()
+double MovingAverage::GetGradient()
 {
 	return this->gradient;
 }
@@ -46,8 +46,8 @@ CrossReturn MovingAverage::HasCrossed(MovingAverage &sma, std::string date)
 	auto this_date_itr = this->moving_average.find(date);
 	auto temp = sma.GetMovingAverage();
 	auto sma_date_itr = temp.find(date);
-	float this_orig_value = this_date_itr->second;
-	float sma_orig_value = sma_date_itr->second;
+	double this_orig_value = this_date_itr->second;
+	double sma_orig_value = sma_date_itr->second;
 
 	// Validate that there is a previous value to check cross direction. If there is not, there is no cross.
 	if (this_date_itr != this->moving_average.begin() && sma_date_itr != temp.begin())
@@ -66,8 +66,8 @@ std::map<std::string, CrossReturn> MovingAverage::ListCrosses(std::string start_
 	std::map<std::string, CrossReturn> cross_events;
 	auto moving_average_itr = this->moving_average.find(start_date);
 	auto price_itr = this->price_data->find(start_date);
-	float moving_average_value{ 0 };
-	float price_value{ 0 };
+	double moving_average_value{ 0 };
+	double price_value{ 0 };
 	CrossReturn cross_status{};
 
 	if (moving_average_itr == this->moving_average.end() || price_itr == this->price_data->end())
@@ -105,10 +105,10 @@ void MovingAverage::CalculateMovingAverage()
 	*/
 
 	auto data_itr = this->price_data->begin();
-	std::map<std::string, float>::iterator data_itr_end = this->price_data->end();
-	std::deque<float> window_deque;
-	float window_average{ 0 };
-	float sum{ 0 };
+	std::map<std::string, double>::iterator data_itr_end = this->price_data->end();
+	std::deque<double> window_deque;
+	double window_average{ 0 };
+	double sum{ 0 };
 
 	
 	if (this->window_size > this->price_data->size())
@@ -145,7 +145,7 @@ void MovingAverage::CalculateMovingAverage()
 
 }
 
-float MovingAverage::CalculateGradient()
+double MovingAverage::CalculateGradient()
 {
 	// Using window_size datapoints from the most recent data of the plot will indicate to use the movement of the price.
 
@@ -155,7 +155,7 @@ float MovingAverage::CalculateGradient()
 	return (datapoint_one_itr->second - datapoint_two_itr->second) / this->window_size;
 }
 
-CrossReturn MovingAverage::CrossGradient(float orig_value1, float orig_value2, float prev_value1, float prev_value2)
+CrossReturn MovingAverage::CrossGradient(double orig_value1, double orig_value2, double prev_value1, double prev_value2)
 {
 	// If dates value is either larger or equal, it means that there is potential for 
 	if (orig_value1 >= orig_value2)

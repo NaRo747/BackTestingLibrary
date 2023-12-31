@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\..\Downloads\YU.L beg.csv" />
     <None Include="YU.L.csv" />
   </ItemGroup>
   <ItemGroup>
@@ -134,11 +135,13 @@
     <ClCompile Include="CsvIterator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovingAverage.cpp" />
+    <ClCompile Include="RelativeStrengthIndex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BackTestSimulation.h" />
     <ClInclude Include="CsvIterator.h" />
     <ClInclude Include="MovingAverage.h" />
+    <ClInclude Include="RelativeStrengthIndex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
